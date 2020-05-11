@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Kamp</string>
+
+
+    <string-array name="malzemeTurList">
+
+        <item>Aydınlatmalar</item>
+        <item>Çadır Malzemeleri</item>
+        <item>Çanta Malzemeleri</item>
+        <item>Giyecekler</item>
+        <item>Kamp Mutfağı</item>
+        <item>Kesici Aletler</item>
+        <item>Yakacak</item>
+        <item>Yiyecekler</item>
+        <item>Diğerleri</item>
+
+
+    </string-array>
+
+</resources>

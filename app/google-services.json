@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "74317472447",
+    "firebase_url": "https://camping-4d818.firebaseio.com",
+    "project_id": "camping-4d818",
+    "storage_bucket": "camping-4d818.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74317472447:android:4c5f9b1c2bbf4d53f11c0a",
+        "android_client_info": {
+          "package_name": "com.sbk.camping"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74317472447-417kebk2kcbtcgbtibn5ifcf9moj4rp5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKhj4hYCHapGTD_NryoY2rLxVNlXEZXfY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "74317472447-417kebk2kcbtcgbtibn5ifcf9moj4rp5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:74317472447:android:ad8255147d99a58cf11c0a",
+        "android_client_info": {
+          "package_name": "com.sbk.camping.git"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "74317472447-417kebk2kcbtcgbtibn5ifcf9moj4rp5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKhj4hYCHapGTD_NryoY2rLxVNlXEZXfY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "74317472447-417kebk2kcbtcgbtibn5ifcf9moj4rp5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

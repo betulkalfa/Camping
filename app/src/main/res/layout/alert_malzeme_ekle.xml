@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/alert_tasarim">
+
+    <EditText
+        android:id="@+id/edtMalzemeUrunAd"
+        android:layout_width="match_parent"
+        android:layout_height="?android:actionBarSize"
+        android:ems="10"
+        android:background="@android:color/transparent"
+        android:inputType="text"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:hint="Malzeme Adı"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#626262"/>
+    <Spinner
+        android:layout_height="?android:actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:entries="@array/malzemeTurList"
+        android:id="@+id/sp"/>
+
+</LinearLayout>
