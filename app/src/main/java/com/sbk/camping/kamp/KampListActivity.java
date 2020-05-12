@@ -59,6 +59,11 @@ public class KampListActivity extends AppCompatActivity {
                 intent.putExtra("KampID",id);
                 startActivity(intent);
             }
+
+            @Override
+            public void sil(String id) {
+
+            }
         });
 
         myRef.addValueEventListener(new ValueEventListener() {

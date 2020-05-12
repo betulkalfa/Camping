@@ -32,7 +32,7 @@ public class MalzemeListActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference myRef;
-
+    RecyclerView rv;
     private MalzemeAdapter malzemeAdapter;
     private List<Malzeme> malzemeList = new ArrayList<Malzeme>();
 
@@ -56,6 +56,10 @@ public class MalzemeListActivity extends AppCompatActivity {
 
             }
         });
+        tumMalzeme();
+
+    }
+    public void tumMalzeme(){
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -73,8 +77,8 @@ public class MalzemeListActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError error) {
             }
         });
-    }
 
+    }
 
     void malzemeEkleDialog() {
 
@@ -110,7 +114,7 @@ public class MalzemeListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         SearchView sv;
         sv = new SearchView(this);
-        ((TextView) sv.findViewById(sv.getContext().getResources().getIdentifier("android:id/search_src_text", null, null))).setTextColor(Color.WHITE);
+        ((TextView) sv.findViewById(sv.getContext().getResources().getIdentifier("android:id/search_src_text", null, null))).setTextColor(Color.BLACK);
         sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -129,7 +133,7 @@ public class MalzemeListActivity extends AppCompatActivity {
         menu.add("Yenile").setIcon(R.drawable.ic_refresh_black_24dp).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-
+               tumMalzeme();
                 return true;
             }
         }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -150,16 +154,13 @@ public class MalzemeListActivity extends AppCompatActivity {
                     Malzeme malzeme = d.getValue(Malzeme.class);
 
                     if(malzeme.getTuru().contains(aramKelime )|| malzeme.getAdi().contains(aramKelime) ){
-                        malzeme.setTuru(d.getKey());
+                        malzeme.setId(d.getKey());
                         malzemeList.add(malzeme);
-                        malzeme.setAdi(d.getKey());
-                        malzemeList.add(malzeme);
+                        
                     }
 
                 }
-
                 malzemeAdapter.notifyDataSetChanged();
-
             }
 
             @Override
@@ -169,5 +170,7 @@ public class MalzemeListActivity extends AppCompatActivity {
         });
 
     }
+
+
 
 }

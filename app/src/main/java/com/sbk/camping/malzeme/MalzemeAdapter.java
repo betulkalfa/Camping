@@ -1,15 +1,20 @@
 package com.sbk.camping.malzeme;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -20,8 +25,9 @@ import java.util.List;
 
 public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolder> {
 
-    private DatabaseReference myRef;
+
     private List<Malzeme> malzemeList;
+    private DatabaseReference myRef;
 
     public MalzemeAdapter(List<Malzeme> malzemeList) {
         this.malzemeList = malzemeList;
@@ -59,14 +65,20 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
                        .setAction("Evet", new View.OnClickListener() {
                            @Override
                            public void onClick(View view) {
-                               myRef.child(malzeme.getId()).removeValue();
+
+                              deleteMalzeme(malzeme.getId());
                            }
                        })
                        .show();
            }
        });
     }
+    private void deleteMalzeme(String id) {
 
+        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("malzeme").child(id);
+        dR.removeValue();
+
+    }
     @Override
     public int getItemCount() {
         return malzemeList != null ? malzemeList.size() : 0;
