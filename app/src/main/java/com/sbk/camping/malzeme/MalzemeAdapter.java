@@ -4,11 +4,15 @@ package com.sbk.camping.malzeme;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sbk.camping.R;
 import com.sbk.camping.model.Malzeme;
 
@@ -16,6 +20,7 @@ import java.util.List;
 
 public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolder> {
 
+    private DatabaseReference myRef;
     private List<Malzeme> malzemeList;
 
     public MalzemeAdapter(List<Malzeme> malzemeList) {
@@ -24,11 +29,12 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
 
     public class RowHolder extends RecyclerView.ViewHolder {
         private TextView title,description;
+        private Button button;
         public RowHolder( View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
-
+            button=itemView.findViewById(R.id.button);
         }
     }
 
@@ -41,10 +47,24 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RowHolder holder, int position) {
-       Malzeme malzeme = malzemeList.get(position);
+    public void onBindViewHolder(@NonNull final RowHolder holder, int position) {
+       final Malzeme malzeme = malzemeList.get(position);
        holder.title.setText(malzeme.getAdi());
        holder.description.setText(malzeme.getTuru());
+       holder.button.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+
+               Snackbar.make(holder.button,"Silinsin mi?",Snackbar.LENGTH_SHORT)
+                       .setAction("Evet", new View.OnClickListener() {
+                           @Override
+                           public void onClick(View view) {
+                               myRef.child(malzeme.getId()).removeValue();
+                           }
+                       })
+                       .show();
+           }
+       });
     }
 
     @Override

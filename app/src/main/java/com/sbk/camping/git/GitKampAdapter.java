@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,11 +14,11 @@ import com.sbk.camping.model.Kamp;
 
 import java.util.List;
 
-public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
+public class GitKampAdapter extends RecyclerView.Adapter<GitKampAdapter.RowHolder> {
 
     private List<Kamp> kampList;
 
-    public KampAdapter(List<Kamp> kampList) {
+    public GitKampAdapter(List<Kamp> kampList) {
         this.kampList = kampList;
     }
 
@@ -37,7 +36,7 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
     @NonNull
     @Override
     public RowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_title_description,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_select_kamp,parent,false);
         return new RowHolder(view);
     }
 
@@ -52,7 +51,7 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
             @Override
             public void onClick(View v) {
                 if (onClickListener!=null){
-                   onClickListener.onClick(kamp.getId());
+                    onClickListener.onClick(kamp.getId());
                 }
             }
         });

@@ -33,15 +33,6 @@
         android:textSize="22dp"
         tools:text="Description" />
 
-    <Button
-        android:id="@+id/button"
-        style="@style/PrimaryButtonStyle"
-        android:layout_width="77dp"
-        android:layout_height="29dp"
-        android:layout_marginLeft="310dp"
-        android:layout_marginTop="-50dp"
-        android:text="Sil"
-        android:textSize="15dp" />
 
     <Space
         android:layout_width="match_parent"
@@ -51,5 +42,5 @@
         android:layout_height="1dp"
         android:background="#909090"/>
 
-        />
+    />
 </LinearLayout>

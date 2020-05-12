@@ -5,6 +5,7 @@ package com.sbk.camping.kamp.malzeme;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -38,7 +39,6 @@ public class KampMalzemeAdapter extends RecyclerView.Adapter<KampMalzemeAdapter.
         }
     }
 
-
     @NonNull
     @Override
     public RowHolder onCreateViewHolder( ViewGroup parent, int viewType) {
@@ -51,6 +51,7 @@ public class KampMalzemeAdapter extends RecyclerView.Adapter<KampMalzemeAdapter.
         final Malzeme malzeme = malzemeList.get(position);
         holder.title.setText(malzeme.getAdi());
         holder.description.setText(malzeme.getTuru());
+
         boolean isHave = false;
         for (Malzeme item :kampMalzemeList){
             if (item.getId()==malzeme.getId()){
@@ -60,6 +61,7 @@ public class KampMalzemeAdapter extends RecyclerView.Adapter<KampMalzemeAdapter.
         }
 
         holder.radioButton.setChecked(isHave);
+
 
         final boolean finalIsHave = isHave;
         holder.itemView.setOnClickListener(new View.OnClickListener() {

@@ -2,12 +2,17 @@ package com.sbk.camping.malzeme;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -99,4 +104,70 @@ public class MalzemeListActivity extends AppCompatActivity {
 
         ad.create().show();
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        SearchView sv;
+        sv = new SearchView(this);
+        ((TextView) sv.findViewById(sv.getContext().getResources().getIdentifier("android:id/search_src_text", null, null))).setTextColor(Color.WHITE);
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                arama(newText);
+
+                return false;
+            }
+        });
+        menu.add("Ara").setActionView(sv).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        menu.add("Yenile").setIcon(R.drawable.ic_refresh_black_24dp).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                return true;
+            }
+        }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        return true;
+    }
+
+    public void arama(final String aramKelime){
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                malzemeList.clear();
+
+                for(DataSnapshot d:dataSnapshot.getChildren()){
+
+                    Malzeme malzeme = d.getValue(Malzeme.class);
+
+                    if(malzeme.getTuru().contains(aramKelime )|| malzeme.getAdi().contains(aramKelime) ){
+                        malzeme.setTuru(d.getKey());
+                        malzemeList.add(malzeme);
+                        malzeme.setAdi(d.getKey());
+                        malzemeList.add(malzeme);
+                    }
+
+                }
+
+                malzemeAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 }

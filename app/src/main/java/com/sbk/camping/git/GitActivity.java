@@ -12,7 +12,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sbk.camping.R;
-import com.sbk.camping.kamp.KampAdapter;
+import com.sbk.camping.kamp.GitKampAdapter;
 import com.sbk.camping.model.Kamp;
 
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ public class GitActivity extends AppCompatActivity {
     private DatabaseReference myRef;
 
 
-    private KampAdapter kampAdapter;
+    private GitKampAdapter kampAdapter;
     private List<Kamp> kampList = new ArrayList<Kamp>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +34,13 @@ public class GitActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("kamp");
-        kampAdapter = new KampAdapter(kampList);
+        kampAdapter = new GitKampAdapter(kampList);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setAdapter(kampAdapter);
 
 
-        kampAdapter.setOnClickListener(new KampAdapter.OnClickListener() {
+        kampAdapter.setOnClickListener(new GitKampAdapter.OnClickListener() {
             @Override
             public void onClick(String id) {
                 Intent intent = new Intent(GitActivity.this, GitDetayActivity.class);
