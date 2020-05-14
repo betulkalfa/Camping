@@ -1,10 +1,15 @@
 package com.sbk.camping.kamp;
 
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,24 +22,32 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.sbk.camping.R;
 import com.sbk.camping.model.Kamp;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
 
     private List<Kamp> kampList;
+    DatabaseReference myRef;
+    private Context context;
+    FirebaseDatabase database;
 
-    public KampAdapter(List<Kamp> kampList) {
+    public KampAdapter(List<Kamp> kampList,Context context) {
+
         this.kampList = kampList;
+        this.context=context;
     }
 
     public class RowHolder extends RecyclerView.ViewHolder {
         private TextView title,description;
-        private Button button;
+        private Button button,button2;
         public RowHolder( View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
             button=itemView.findViewById(R.id.button);
+            button2=itemView.findViewById(R.id.button2);
 
         }
     }
@@ -76,10 +89,14 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
             }
         });
 
+        holder.button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateKamp(kamp.getId());
             }
+        });
 
-
-
+    }
 
 
 
@@ -91,6 +108,56 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
 
         DatabaseReference dR = FirebaseDatabase.getInstance().getReference("kamp").child(id);
         dR.removeValue();
+
+    }
+    public void updateKamp(final String id){
+
+
+
+        LayoutInflater layout = LayoutInflater.from(context);
+        View tasarim = layout.inflate(R.layout.alert_kamp_ekle, null);
+        final EditText edtAdi = tasarim.findViewById(R.id.kampAdi);
+        final EditText edtTur = tasarim.findViewById(R.id.aciklama);
+
+
+        final AlertDialog.Builder ad = new AlertDialog.Builder(context);
+        ad.setTitle("Kamp  Güncelleyin");
+
+       edtAdi.getText();
+
+
+        ad.setView(tasarim);
+
+        ad.setPositiveButton("Güncelle", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
+
+                String adi= edtAdi.getText().toString().trim();
+
+                String turu= edtTur.getText().toString().trim();
+
+                Map<String,Object> bilgiler = new HashMap<>();
+
+
+
+                bilgiler.put("adi",adi);
+                bilgiler.put("turu",turu);
+
+                database = FirebaseDatabase.getInstance();
+                myRef = database.getReference("kamp");
+
+                myRef.child(id).updateChildren(bilgiler);
+
+
+
+            }
+        });
+
+        ad.setNegativeButton("İptal", null);
+
+        ad.create().show();
 
     }
 

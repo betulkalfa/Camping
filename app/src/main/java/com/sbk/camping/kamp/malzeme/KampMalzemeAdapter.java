@@ -52,6 +52,7 @@ public class KampMalzemeAdapter extends RecyclerView.Adapter<KampMalzemeAdapter.
         holder.title.setText(malzeme.getAdi());
         holder.description.setText(malzeme.getTuru());
 
+
         boolean isHave = false;
         for (Malzeme item :kampMalzemeList){
             if (item.getId()==malzeme.getId()){

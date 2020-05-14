@@ -10,14 +10,13 @@
     android:tag="front">
 
 
-
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TextAppearance.AppCompat.Title"
         tools:text="Title"
-        android:textColor="#fff"
+        android:textColor="#000000"
         android:layout_marginRight="200dp"
         android:textSize="25dp"
 
@@ -29,27 +28,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="200dp"
-        android:textColor="#fff"
-        android:textSize="22dp"
+        android:textColor="#000000"
+        android:textSize="18dp"
         tools:text="Description" />
+
 
     <Button
         android:id="@+id/button"
-        style="@style/PrimaryButtonStyle"
-        android:layout_width="77dp"
+        android:layout_width="50dp"
         android:layout_height="29dp"
-        android:layout_marginLeft="310dp"
+        android:layout_marginLeft="320dp"
         android:layout_marginTop="-50dp"
+        android:background="@null"
         android:text="Sil"
-        android:textSize="15dp" />
+        android:textColor="#000000"
+        android:textSize="14dp" />
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="20dp"/>
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="70dp"
+        android:layout_height="29dp"
+        android:layout_marginLeft="220dp"
+        android:layout_marginTop="-30dp"
+        android:background="@null"
+        android:text="Güncelle"
+        android:textColor="#000000"
+        android:textSize="14dp" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#909090"/>
+        android:layout_marginTop="30dp"
+        android:background="#909090" />
 
-        />
+    />
 </LinearLayout>

@@ -43,7 +43,7 @@ public class MalzemeListActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("malzeme");
 
-        malzemeAdapter = new MalzemeAdapter(malzemeList);
+        malzemeAdapter = new MalzemeAdapter(malzemeList,this);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setAdapter(malzemeAdapter);

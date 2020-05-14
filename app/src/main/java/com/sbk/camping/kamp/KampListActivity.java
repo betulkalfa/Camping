@@ -6,10 +6,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.sbk.camping.kamp.malzeme.KampMalzemeListActivity;
 import com.sbk.camping.R;
 import com.sbk.camping.model.Kamp;
+import com.sbk.camping.model.Malzeme;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +45,7 @@ public class KampListActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("kamp");
-        kampAdapter = new KampAdapter(kampList);
+        kampAdapter = new KampAdapter(kampList,this);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setAdapter(kampAdapter);
@@ -65,7 +71,10 @@ public class KampListActivity extends AppCompatActivity {
 
             }
         });
+        tumKampListele();
 
+    }
+    private void tumKampListele(){
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -85,6 +94,8 @@ public class KampListActivity extends AppCompatActivity {
                 // Failed to read value
             }
         });
+
+
     }
 
     private void kampEkleDialog() {
@@ -115,4 +126,65 @@ public class KampListActivity extends AppCompatActivity {
 
         ad.create().show();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        SearchView sv;
+        sv = new SearchView(this);
+        ((TextView) sv.findViewById(sv.getContext().getResources().getIdentifier("android:id/search_src_text", null, null))).setTextColor(Color.BLACK);
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                arama(newText);
+
+                return false;
+            }
+        });
+        menu.add("Ara").setActionView(sv).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        menu.add("Yenile").setIcon(R.drawable.ic_refresh_black_24dp).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                tumKampListele();
+                return true;
+            }
+        }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        return true;
+    }
+    public void arama(final String aramKelime){
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                kampList.clear();
+
+                for(DataSnapshot d:dataSnapshot.getChildren()){
+
+                    Kamp kamp = d.getValue(Kamp.class);
+
+                    if(kamp.getTuru().contains(aramKelime )|| kamp.getAdi().contains(aramKelime) ){
+                        kamp.setId(d.getKey());
+                        kampList.add(kamp);
+
+                    }
+
+                }
+                kampAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 }
