@@ -63,7 +63,7 @@ public class KampMalzemeAdapter extends RecyclerView.Adapter<KampMalzemeAdapter.
 
         boolean isHave = false;
         for (Malzeme item :kampMalzemeList){
-            if (item.getId()==malzeme.getId()){
+            if (item.getId().equals(malzeme.getId())){
               isHave = true;
                 break;
             }
@@ -74,7 +74,6 @@ public class KampMalzemeAdapter extends RecyclerView.Adapter<KampMalzemeAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 if (onClickListener != null) {
                     if (finalIsHave){
