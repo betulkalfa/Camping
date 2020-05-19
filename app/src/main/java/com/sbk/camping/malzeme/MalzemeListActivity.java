@@ -26,6 +26,9 @@ import com.sbk.camping.R;
 import com.sbk.camping.model.Malzeme;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MalzemeListActivity extends AppCompatActivity {
@@ -35,6 +38,7 @@ public class MalzemeListActivity extends AppCompatActivity {
     RecyclerView rv;
     private MalzemeAdapter malzemeAdapter;
     private List<Malzeme> malzemeList = new ArrayList<Malzeme>();
+    private Malzeme malzeme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,7 @@ public class MalzemeListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                malzemeEkleDialog();
+         malzemeEkleDialog();
 
             }
         });
@@ -69,6 +73,21 @@ public class MalzemeListActivity extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Malzeme malzeme = postSnapshot.getValue(Malzeme.class);
                     malzemeList.add(malzeme);
+                    Collections.sort(malzemeList, new Comparator<Malzeme>() {
+                        @Override
+                        public int compare(Malzeme o1, Malzeme o2) {
+                            return o1.getAdi().compareTo(o2.getAdi());
+                        }
+                    });
+                    Collections.sort(malzemeList, new Comparator<Malzeme>() {
+                        @Override
+                        public int compare(Malzeme o1, Malzeme o2) {
+                            return o1.getTuru().compareTo(o2.getTuru());
+
+                        }
+
+                    });
+
                 }
                 malzemeAdapter.notifyDataSetChanged();
             }
@@ -90,10 +109,7 @@ public class MalzemeListActivity extends AppCompatActivity {
 
         AlertDialog.Builder ad = new AlertDialog.Builder(this);
         ad.setTitle("Kamp Malzemesi Ekleyin");
-
-
         ad.setView(tasarim);
-
         ad.setPositiveButton("Ekle", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -102,13 +118,9 @@ public class MalzemeListActivity extends AppCompatActivity {
                 myRef.child(id).setValue(new Malzeme(id, edtMalzemeAdi.getText().toString(), spMalzemeTur.getItemAtPosition(spMalzemeTur.getSelectedItemPosition()).toString()));
             }
         });
-
-
         ad.setNegativeButton("İptal", null);
-
         ad.create().show();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -156,7 +168,7 @@ public class MalzemeListActivity extends AppCompatActivity {
                     if(malzeme.getTuru().contains(aramKelime )|| malzeme.getAdi().contains(aramKelime) ){
                         malzeme.setId(d.getKey());
                         malzemeList.add(malzeme);
-                        
+
                     }
 
                 }
@@ -170,7 +182,6 @@ public class MalzemeListActivity extends AppCompatActivity {
         });
 
     }
-
 
 
 }

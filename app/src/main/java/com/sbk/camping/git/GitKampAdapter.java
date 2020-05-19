@@ -1,4 +1,4 @@
-package com.sbk.camping.kamp;
+package com.sbk.camping.git;
 
 
 import android.view.LayoutInflater;

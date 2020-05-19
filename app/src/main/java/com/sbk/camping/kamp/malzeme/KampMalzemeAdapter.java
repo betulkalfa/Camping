@@ -2,6 +2,9 @@ package com.sbk.camping.kamp.malzeme;
 
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,19 +24,23 @@ public class KampMalzemeAdapter extends RecyclerView.Adapter<KampMalzemeAdapter.
 
     private List<Malzeme> malzemeList;
     private List<Malzeme> kampMalzemeList;
+    SharedPreferences sharedPreferences;
 
     public KampMalzemeAdapter(List<Malzeme> malzemeList, List<Malzeme> kampMalzemeList) {
         this.malzemeList = malzemeList;
         this.kampMalzemeList = kampMalzemeList;
     }
 
+
     public class RowHolder extends RecyclerView.ViewHolder {
         private RadioButton radioButton;
         private TextView title,description;
+
         public RowHolder( View itemView) {
             super(itemView);
             radioButton= itemView.findViewById(R.id.radioButton);
             title = itemView.findViewById(R.id.title);
+
             description = itemView.findViewById(R.id.description);
 
         }
@@ -53,32 +60,41 @@ public class KampMalzemeAdapter extends RecyclerView.Adapter<KampMalzemeAdapter.
         holder.description.setText(malzeme.getTuru());
 
 
+
         boolean isHave = false;
         for (Malzeme item :kampMalzemeList){
             if (item.getId()==malzeme.getId()){
-                isHave = true;
+              isHave = true;
                 break;
             }
         }
 
         holder.radioButton.setChecked(isHave);
-
-
         final boolean finalIsHave = isHave;
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 if (onClickListener != null) {
                     if (finalIsHave){
                         onClickListener.onUnSelect(malzeme);
+                        //SharedPreferences.Editor editor=sharedPreferences.edit();
+                     //   editor.putString("buton",buton)
+
                     }else {
                         onClickListener.onSelect(malzeme);
+
                     }
 
                 }
+
             }
         });
+
+
     }
+
 
     @Override
     public int getItemCount() {
@@ -90,6 +106,7 @@ public class KampMalzemeAdapter extends RecyclerView.Adapter<KampMalzemeAdapter.
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
+
     }
 
     public interface OnClickListener{

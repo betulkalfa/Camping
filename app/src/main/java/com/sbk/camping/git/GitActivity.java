@@ -12,17 +12,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sbk.camping.R;
-import com.sbk.camping.kamp.GitKampAdapter;
+
 import com.sbk.camping.model.Kamp;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class GitActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference myRef;
-
 
     private GitKampAdapter kampAdapter;
     private List<Kamp> kampList = new ArrayList<Kamp>();
@@ -58,6 +59,22 @@ public class GitActivity extends AppCompatActivity {
                     Kamp malzeme = postSnapshot.getValue(Kamp.class);
                     kampList.add(malzeme);
                 }
+                Collections.sort(kampList, new Comparator<Kamp>() {
+                    @Override
+                    public int compare(Kamp o1, Kamp o2) {
+                        return o1.getTuru().compareTo(o2.getTuru());
+
+                    }
+
+                });
+                Collections.sort(kampList, new Comparator<Kamp>() {
+                    @Override
+                    public int compare(Kamp o1, Kamp o2) {
+                        return o1.getAdi().compareTo(o2.getAdi());
+
+                    }
+
+                });
                 kampAdapter.notifyDataSetChanged();
 
 

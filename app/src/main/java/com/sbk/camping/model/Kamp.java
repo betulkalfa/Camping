@@ -1,6 +1,7 @@
 package com.sbk.camping.model;
 
 
+import java.util.Comparator;
 import java.util.List;
 
 public class Kamp {
@@ -68,4 +69,7 @@ public class Kamp {
     public void setOlanMalzemeList(List<Malzeme> olanMalzemeList) {
         this.olanMalzemeList = olanMalzemeList;
     }
-}
+
+
+    }
+

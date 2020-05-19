@@ -27,6 +27,8 @@ import com.sbk.camping.model.Kamp;
 import com.sbk.camping.model.Malzeme;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class KampListActivity extends AppCompatActivity {
@@ -84,6 +86,21 @@ public class KampListActivity extends AppCompatActivity {
                     Kamp malzeme = postSnapshot.getValue(Kamp.class);
                     kampList.add(malzeme);
                 }
+                Collections.sort(kampList, new Comparator<Kamp>() {
+                    @Override
+                    public int compare(Kamp o1, Kamp o2) {
+                        return o1.getTuru().compareTo(o2.getTuru());
+
+                    }
+
+                });
+                Collections.sort(kampList, new Comparator<Kamp>() {
+                    @Override
+                    public int compare(Kamp o1, Kamp o2) {
+                        return o1.getAdi().compareTo(o2.getAdi());
+                    }
+                });
+
                 kampAdapter.notifyDataSetChanged();
 
 

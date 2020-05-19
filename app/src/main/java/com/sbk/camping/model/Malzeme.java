@@ -1,6 +1,8 @@
 package com.sbk.camping.model;
 
 
+import java.util.Comparator;
+
 public class Malzeme {
     private String id;
     private String adi;
@@ -38,4 +40,5 @@ public class Malzeme {
     public void setTuru(String turu) {
         this.turu = turu;
     }
+
 }

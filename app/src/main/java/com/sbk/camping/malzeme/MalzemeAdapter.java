@@ -20,6 +20,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sbk.camping.R;
+import com.sbk.camping.kamp.KampAdapter;
+import com.sbk.camping.model.Kamp;
 import com.sbk.camping.model.Malzeme;
 
 import java.util.HashMap;
@@ -33,7 +35,7 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
     DatabaseReference myRef;
     private Context context;
     FirebaseDatabase database;
-
+    private Malzeme malzeme;
 
 
     public MalzemeAdapter(List<Malzeme> malzemeList, Context context) {
@@ -85,7 +87,7 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
        holder.button2.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
-               updateMalzeme(malzeme.getId());
+               updateMalzeme(malzeme);
            }
        });
 
@@ -104,7 +106,7 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
 
     }
 
-    public void updateMalzeme(final String id){
+    public void updateMalzeme(final Malzeme malzeme){
 
 
 
@@ -116,9 +118,11 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
 
         final AlertDialog.Builder ad = new AlertDialog.Builder(context);
         ad.setTitle("Kamp Malzemesi Güncelleyin");
-
-
         ad.setView(tasarim);
+
+       edtMalzemeAdi.setText(malzeme.getAdi());
+      // spMalzemeTur.setSelection(malzeme.getTuru());
+
 
         ad.setPositiveButton("Güncelle", new DialogInterface.OnClickListener() {
             @Override
@@ -137,7 +141,7 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
                 database = FirebaseDatabase.getInstance();
                 myRef = database.getReference("malzeme");
 
-                myRef.child(id).updateChildren(bilgiler);
+                myRef.child(malzeme.getId()).updateChildren(bilgiler);
 
 
             }

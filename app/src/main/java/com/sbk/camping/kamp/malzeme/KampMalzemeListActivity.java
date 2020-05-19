@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,11 +20,16 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sbk.camping.MainActivity;
 import com.sbk.camping.R;
+import com.sbk.camping.malzeme.MalzemeAdapter;
 import com.sbk.camping.model.Kamp;
 import com.sbk.camping.model.Malzeme;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class KampMalzemeListActivity extends AppCompatActivity {
 
@@ -31,8 +38,10 @@ public class KampMalzemeListActivity extends AppCompatActivity {
     private String kampID;
     private Kamp kamp;
     private KampMalzemeAdapter kampMalzemeAdapter;
+    private MalzemeAdapter malzemeAdapter;
     private List<Malzeme> malzemeList = new ArrayList<Malzeme>();
     private List<Malzeme> kampMalzemeList = new ArrayList<Malzeme>();
+    SharedPreferences  sp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,16 +66,16 @@ public class KampMalzemeListActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-
                 kampMalzemeList.clear();
                 kamp = dataSnapshot.child(kampID).getValue(Kamp.class);
                 if (kamp != null && kamp.getMalzemeList() != null) {
                     kampMalzemeList.addAll(kamp.getMalzemeList());
                 }
+
                 kampMalzemeAdapter.notifyDataSetChanged();
 
-              // getSupportActionBar().setTitle(kamp.getAdi());
-              // getSupportActionBar().setSubtitle(kamp.getTuru());
+              getSupportActionBar().setTitle(kamp.getAdi());
+              getSupportActionBar().setSubtitle(kamp.getTuru());
 
             }
 
@@ -75,8 +84,6 @@ public class KampMalzemeListActivity extends AppCompatActivity {
 
             }
         });
-
-
 
         malzemeRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -87,6 +94,18 @@ public class KampMalzemeListActivity extends AppCompatActivity {
                     Malzeme malzeme = postSnapshot.getValue(Malzeme.class);
                     malzemeList.add(malzeme);
                 }
+                Collections.sort(malzemeList, new Comparator<Malzeme>() {
+                    @Override
+                    public int compare(Malzeme o1, Malzeme o2) {
+                        return o1.getAdi().compareTo(o2.getAdi());
+                    }
+                });
+                Collections.sort(malzemeList, new Comparator<Malzeme>() {
+                    @Override
+                    public int compare(Malzeme o1, Malzeme o2) {
+                        return o1.getTuru().compareTo(o2.getTuru());
+                    }
+                });
                 kampMalzemeAdapter.notifyDataSetChanged();
             }
 
@@ -102,6 +121,7 @@ public class KampMalzemeListActivity extends AppCompatActivity {
             public void onSelect(Malzeme item) {
                 DatabaseReference dr = kampRef.child(kampID);
                 List<Malzeme> ml = new ArrayList<Malzeme>();
+
                 if (kamp.getMalzemeList()!=null){
                     ml.addAll(kamp.getMalzemeList());
                 }
@@ -178,22 +198,25 @@ public class KampMalzemeListActivity extends AppCompatActivity {
 
                     Malzeme malzeme = d.getValue(Malzeme.class);
 
-                    if(malzeme.getTuru().contains(aramKelime )|| kamp.getAdi().contains(aramKelime) ){
+                    if(malzeme.getTuru().contains(aramKelime )|| malzeme.getAdi().contains(aramKelime) ){
                         malzeme.setId(d.getKey());
-                        kampMalzemeList.add(malzeme);
-
+                        malzemeList.add(malzeme);
                     }
 
                 }
+
                 kampMalzemeAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
+    }
 
+    private void getSetting(){
+        sp=getSharedPreferences("myref", MODE_PRIVATE);
+        boolean radio=sp.getBoolean("rd",true);
     }
 
 }

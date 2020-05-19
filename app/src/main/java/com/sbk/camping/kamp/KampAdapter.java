@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sbk.camping.R;
 import com.sbk.camping.model.Kamp;
+import com.sbk.camping.model.Malzeme;
 
 import java.util.HashMap;
 import java.util.List;
@@ -92,14 +93,11 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
         holder.button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateKamp(kamp.getId());
+                updateKamp(kamp);
             }
         });
 
     }
-
-
-
     @Override
     public int getItemCount() {
         return kampList != null ? kampList.size() : 0;
@@ -110,37 +108,31 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
         dR.removeValue();
 
     }
-    public void updateKamp(final String id){
+    public void updateKamp(final Kamp kamp){
 
 
 
         LayoutInflater layout = LayoutInflater.from(context);
-        View tasarim = layout.inflate(R.layout.alert_kamp_ekle, null);
+        final View tasarim = layout.inflate(R.layout.alert_kamp_ekle, null);
         final EditText edtAdi = tasarim.findViewById(R.id.kampAdi);
         final EditText edtTur = tasarim.findViewById(R.id.aciklama);
-
-
         final AlertDialog.Builder ad = new AlertDialog.Builder(context);
+
         ad.setTitle("Kamp  Güncelleyin");
-
-       edtAdi.getText();
-
-
         ad.setView(tasarim);
+
+        edtAdi.setText(kamp.getAdi());
+        edtTur.setText(kamp.getTuru());
 
         ad.setPositiveButton("Güncelle", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-
-
-                String adi= edtAdi.getText().toString().trim();
-
+               // String adi= edtAdi.getText().toString().trim();
+                String adi=String.valueOf(edtAdi.getText());
                 String turu= edtTur.getText().toString().trim();
 
                 Map<String,Object> bilgiler = new HashMap<>();
-
-
 
                 bilgiler.put("adi",adi);
                 bilgiler.put("turu",turu);
@@ -148,7 +140,7 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
                 database = FirebaseDatabase.getInstance();
                 myRef = database.getReference("kamp");
 
-                myRef.child(id).updateChildren(bilgiler);
+                myRef.child(kamp.getId()).updateChildren(bilgiler);
 
 
 
