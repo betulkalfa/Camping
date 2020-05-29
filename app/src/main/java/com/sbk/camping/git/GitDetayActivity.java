@@ -34,6 +34,7 @@ public class GitDetayActivity extends AppCompatActivity {
     private KampMalzemeAdapter kampMalzemeAdapter;
     private List<Malzeme> kampMalzemeList = new ArrayList<Malzeme>();
     private List<Malzeme> olanMalzemeList = new ArrayList<Malzeme>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +71,7 @@ public class GitDetayActivity extends AppCompatActivity {
 
             @Override
             public void onUnSelect(Malzeme item) {
+
                 DatabaseReference dr = kampRef.child(kampID);
                 List<Malzeme> ml = new ArrayList<Malzeme>();
                 if (kamp.getOlanMalzemeList()!=null){
@@ -90,8 +92,7 @@ public class GitDetayActivity extends AppCompatActivity {
         kampRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
+
 
                 olanMalzemeList.clear();
                 kampMalzemeList.clear();
@@ -104,6 +105,7 @@ public class GitDetayActivity extends AppCompatActivity {
                 if (kamp != null && kamp.getMalzemeList() != null) {
                     kampMalzemeList.addAll(kamp.getMalzemeList());
 
+
                 }
                 Collections.sort(olanMalzemeList, new Comparator<Malzeme>() {
                     @Override
@@ -114,6 +116,22 @@ public class GitDetayActivity extends AppCompatActivity {
 
                 });
                 Collections.sort(olanMalzemeList, new Comparator<Malzeme>() {
+                    @Override
+                    public int compare(Malzeme o1, Malzeme o2) {
+                        return o1.getAdi().compareTo(o2.getAdi());
+
+                    }
+
+                });
+                Collections.sort(kampMalzemeList, new Comparator<Malzeme>() {
+                    @Override
+                    public int compare(Malzeme o1, Malzeme o2) {
+                        return o1.getTuru().compareTo(o2.getTuru());
+
+                    }
+
+                });
+                Collections.sort(kampMalzemeList, new Comparator<Malzeme>() {
                     @Override
                     public int compare(Malzeme o1, Malzeme o2) {
                         return o1.getAdi().compareTo(o2.getAdi());
@@ -136,7 +154,7 @@ public class GitDetayActivity extends AppCompatActivity {
         });
 
     }
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         SearchView sv;
         sv = new SearchView(this);
@@ -158,7 +176,7 @@ public class GitDetayActivity extends AppCompatActivity {
 
         menu.add("Ara").setActionView(sv).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        menu.add("Kamp Bitir").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        *//*menu.add("Kamp Bitir").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 finish();
@@ -167,7 +185,7 @@ public class GitDetayActivity extends AppCompatActivity {
                 return true;
             }
         }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
+*//*
         return true;
     }
     public void arama(final String aramKelime){
@@ -198,5 +216,5 @@ public class GitDetayActivity extends AppCompatActivity {
             }
         });
 
-    }
+    }*/
 }

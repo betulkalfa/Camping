@@ -24,7 +24,7 @@ public class KampMalzemeAdapter extends RecyclerView.Adapter<KampMalzemeAdapter.
 
     private List<Malzeme> malzemeList;
     private List<Malzeme> kampMalzemeList;
-    SharedPreferences sharedPreferences;
+
 
     public KampMalzemeAdapter(List<Malzeme> malzemeList, List<Malzeme> kampMalzemeList) {
         this.malzemeList = malzemeList;
@@ -78,8 +78,6 @@ public class KampMalzemeAdapter extends RecyclerView.Adapter<KampMalzemeAdapter.
                 if (onClickListener != null) {
                     if (finalIsHave){
                         onClickListener.onUnSelect(malzeme);
-                        //SharedPreferences.Editor editor=sharedPreferences.edit();
-                     //   editor.putString("buton",buton)
 
                     }else {
                         onClickListener.onSelect(malzeme);

@@ -34,6 +34,7 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
     private Context context;
     FirebaseDatabase database;
 
+
     public KampAdapter(List<Kamp> kampList,Context context) {
 
         this.kampList = kampList;

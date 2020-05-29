@@ -41,7 +41,7 @@ public class KampMalzemeListActivity extends AppCompatActivity {
     private MalzemeAdapter malzemeAdapter;
     private List<Malzeme> malzemeList = new ArrayList<Malzeme>();
     private List<Malzeme> kampMalzemeList = new ArrayList<Malzeme>();
-    SharedPreferences  sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,7 +152,7 @@ public class KampMalzemeListActivity extends AppCompatActivity {
         });
     }
 
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         SearchView sv;
         sv = new SearchView(this);
@@ -212,11 +212,7 @@ public class KampMalzemeListActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-    }
+    }*/
 
-    private void getSetting(){
-        sp=getSharedPreferences("myref", MODE_PRIVATE);
-        boolean radio=sp.getBoolean("rd",true);
-    }
 
 }

@@ -4,7 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -85,5 +90,58 @@ public class GitActivity extends AppCompatActivity {
                 // Failed to read value
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        SearchView sv;
+        sv = new SearchView(this);
+        ((TextView) sv.findViewById(sv.getContext().getResources().getIdentifier("android:id/search_src_text", null, null))).setTextColor(Color.BLACK);
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                arama(newText);
+
+                return false;
+            }
+        });
+        menu.add("Ara").setActionView(sv).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+
+        return true;
+    }
+    public void arama(final String aramKelime){
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                kampList.clear();
+
+                for(DataSnapshot d:dataSnapshot.getChildren()){
+
+                    Kamp kamp = d.getValue(Kamp.class);
+
+                    if(kamp.getTuru().contains(aramKelime )|| kamp.getAdi().contains(aramKelime) ){
+                        kamp.setId(d.getKey());
+                        kampList.add(kamp);
+
+                    }
+
+                }
+                kampAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }
