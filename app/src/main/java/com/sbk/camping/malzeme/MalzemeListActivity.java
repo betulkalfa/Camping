@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -79,14 +81,7 @@ public class MalzemeListActivity extends AppCompatActivity {
                             return o1.getAdi().compareTo(o2.getAdi());
                         }
                     });
-                    Collections.sort(malzemeList, new Comparator<Malzeme>() {
-                        @Override
-                        public int compare(Malzeme o1, Malzeme o2) {
-                            return o1.getTuru().compareTo(o2.getTuru());
 
-                        }
-
-                    });
 
                 }
                 malzemeAdapter.notifyDataSetChanged();
@@ -102,7 +97,7 @@ public class MalzemeListActivity extends AppCompatActivity {
     void malzemeEkleDialog() {
 
         LayoutInflater layout = LayoutInflater.from(this);
-        View tasarim = layout.inflate(R.layout.alert_malzeme_ekle, null);
+        final View tasarim = layout.inflate(R.layout.alert_malzeme_ekle, null);
         final EditText edtMalzemeAdi = tasarim.findViewById(R.id.edtMalzemeUrunAd);
         final Spinner spMalzemeTur = tasarim.findViewById(R.id.sp);
 
@@ -115,7 +110,16 @@ public class MalzemeListActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
 
                 String id = myRef.push().getKey();
-                myRef.child(id).setValue(new Malzeme(id, edtMalzemeAdi.getText().toString(), spMalzemeTur.getItemAtPosition(spMalzemeTur.getSelectedItemPosition()).toString()));
+
+            if((edtMalzemeAdi!=null  )) {
+
+                    myRef.child(id).setValue(new Malzeme(id, edtMalzemeAdi.getText().toString(), spMalzemeTur.getItemAtPosition(spMalzemeTur.getSelectedItemPosition()).toString()));
+
+                }
+
+                else{
+                    Toast.makeText(getApplicationContext(),"text",Toast.LENGTH_LONG).show();
+                }
             }
         });
         ad.setNegativeButton("İptal", null);

@@ -1,63 +1,34 @@
 {
   "project_info": {
-    "project_number": "74317472447",
-    "firebase_url": "https://camping-4d818.firebaseio.com",
-    "project_id": "camping-4d818",
-    "storage_bucket": "camping-4d818.appspot.com"
+    "project_number": "880845928257",
+    "firebase_url": "https://kamp-6afd3.firebaseio.com",
+    "project_id": "kamp-6afd3",
+    "storage_bucket": "kamp-6afd3.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:74317472447:android:4c5f9b1c2bbf4d53f11c0a",
+        "mobilesdk_app_id": "1:880845928257:android:0f4a1e6756fe993d4693c0",
         "android_client_info": {
           "package_name": "com.sbk.camping"
         }
       },
       "oauth_client": [
         {
-          "client_id": "74317472447-417kebk2kcbtcgbtibn5ifcf9moj4rp5.apps.googleusercontent.com",
+          "client_id": "880845928257-f6rus45f42sf62eh49bcrlu9tlr0n02c.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDKhj4hYCHapGTD_NryoY2rLxVNlXEZXfY"
+          "current_key": "AIzaSyCYwq4ifavpQy3utmnqxk65SnwnGci0ur8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "74317472447-417kebk2kcbtcgbtibn5ifcf9moj4rp5.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:74317472447:android:ad8255147d99a58cf11c0a",
-        "android_client_info": {
-          "package_name": "com.sbk.camping.git"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "74317472447-417kebk2kcbtcgbtibn5ifcf9moj4rp5.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDKhj4hYCHapGTD_NryoY2rLxVNlXEZXfY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "74317472447-417kebk2kcbtcgbtibn5ifcf9moj4rp5.apps.googleusercontent.com",
+              "client_id": "880845928257-f6rus45f42sf62eh49bcrlu9tlr0n02c.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

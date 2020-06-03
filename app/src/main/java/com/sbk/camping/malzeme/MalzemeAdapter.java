@@ -119,6 +119,8 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
         final AlertDialog.Builder ad = new AlertDialog.Builder(context);
         ad.setTitle("Kamp Malzemesi Güncelleyin");
         ad.setView(tasarim);
+        spMalzemeTur.setSelection(spMalzemeTur.getSelectedItemPosition());
+        spMalzemeTur.getSelectedItem();
 
        edtMalzemeAdi.setText(malzeme.getAdi());
       // spMalzemeTur.setSelection(malzeme.getTuru());
@@ -152,4 +154,5 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
         ad.create().show();
 
     }
+
 }
