@@ -111,14 +111,15 @@ public class MalzemeListActivity extends AppCompatActivity {
 
                 String id = myRef.push().getKey();
 
-            if((edtMalzemeAdi!=null  )) {
+            if(!edtMalzemeAdi.getText().toString().isEmpty()) {
+
 
                     myRef.child(id).setValue(new Malzeme(id, edtMalzemeAdi.getText().toString(), spMalzemeTur.getItemAtPosition(spMalzemeTur.getSelectedItemPosition()).toString()));
 
                 }
 
                 else{
-                    Toast.makeText(getApplicationContext(),"text",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Lütfen Malzeme Adı Giriniz.",Toast.LENGTH_LONG).show();
                 }
             }
         });
