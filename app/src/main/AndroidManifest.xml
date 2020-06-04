@@ -23,7 +23,9 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".malzeme.MalzemeListActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+
+             />
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">

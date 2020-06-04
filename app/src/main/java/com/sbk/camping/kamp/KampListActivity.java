@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -23,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sbk.camping.kamp.malzeme.KampMalzemeListActivity;
 import com.sbk.camping.R;
+import com.sbk.camping.model.Cihaz;
 import com.sbk.camping.model.Kamp;
 import com.sbk.camping.model.Malzeme;
 
@@ -35,10 +38,10 @@ public class KampListActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference myRef;
-
-
     private KampAdapter kampAdapter;
     private List<Kamp> kampList = new ArrayList<Kamp>();
+    private  DatabaseReference ref;
+    private Cihaz cihaz;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,8 @@ public class KampListActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("kamp");
         kampAdapter = new KampAdapter(kampList,this);
+
+
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setAdapter(kampAdapter);
@@ -129,12 +134,17 @@ public class KampListActivity extends AppCompatActivity {
 
 
         ad.setView(tasarim);
-
         ad.setPositiveButton("Ekle", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 String id = myRef.push().getKey();
-                myRef.child(id).setValue(new Kamp(id, kampAdi.getText().toString(),  aciklama.getText().toString(),null));
+                myRef.child(id).setValue(new Kamp(id, kampAdi.getText().toString(), aciklama.getText().toString(),null));
+
+
+
+
+
             }
         });
 

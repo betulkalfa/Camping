@@ -1,15 +1,20 @@
 package com.sbk.camping.malzeme;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sbk.camping.R;
+import com.sbk.camping.model.Cihaz;
 import com.sbk.camping.model.Malzeme;
 
 import java.util.ArrayList;
@@ -37,15 +43,18 @@ public class MalzemeListActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference myRef;
-    RecyclerView rv;
+    RecyclerView rv ;
     private MalzemeAdapter malzemeAdapter;
     private List<Malzeme> malzemeList = new ArrayList<Malzeme>();
     private Malzeme malzeme;
+    private Cihaz cihaz;
+    private List<Cihaz> cihazList=new ArrayList<Cihaz>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_malzeme_list);
+
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("malzeme");
 
@@ -54,15 +63,18 @@ public class MalzemeListActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setAdapter(malzemeAdapter);
 
+        tumMalzeme();
+
         findViewById(R.id.floatingActionButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-         malzemeEkleDialog();
+                malzemeEkleDialog();
+
 
             }
         });
-        tumMalzeme();
+
 
     }
     public void tumMalzeme(){
@@ -75,6 +87,8 @@ public class MalzemeListActivity extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     Malzeme malzeme = postSnapshot.getValue(Malzeme.class);
                     malzemeList.add(malzeme);
+
+
                     Collections.sort(malzemeList, new Comparator<Malzeme>() {
                         @Override
                         public int compare(Malzeme o1, Malzeme o2) {
@@ -102,6 +116,7 @@ public class MalzemeListActivity extends AppCompatActivity {
         final Spinner spMalzemeTur = tasarim.findViewById(R.id.sp);
 
 
+
         AlertDialog.Builder ad = new AlertDialog.Builder(this);
         ad.setTitle("Kamp Malzemesi Ekleyin");
         ad.setView(tasarim);
@@ -110,18 +125,21 @@ public class MalzemeListActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
 
                 String id = myRef.push().getKey();
+          //     id= Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
 
             if(!edtMalzemeAdi.getText().toString().isEmpty()) {
 
-
                     myRef.child(id).setValue(new Malzeme(id, edtMalzemeAdi.getText().toString(), spMalzemeTur.getItemAtPosition(spMalzemeTur.getSelectedItemPosition()).toString()));
-
                 }
 
                 else{
                     Toast.makeText(getApplicationContext(),"Lütfen Malzeme Adı Giriniz.",Toast.LENGTH_LONG).show();
                 }
             }
+
+
+
+
         });
         ad.setNegativeButton("İptal", null);
         ad.create().show();
@@ -132,6 +150,8 @@ public class MalzemeListActivity extends AppCompatActivity {
         SearchView sv;
         sv = new SearchView(this);
         ((TextView) sv.findViewById(sv.getContext().getResources().getIdentifier("android:id/search_src_text", null, null))).setTextColor(Color.BLACK);
+
+        sv.setInputType((InputType.TYPE_TEXT_VARIATION_PERSON_NAME));
         sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

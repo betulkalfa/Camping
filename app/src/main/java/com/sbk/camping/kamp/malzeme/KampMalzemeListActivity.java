@@ -38,7 +38,6 @@ public class KampMalzemeListActivity extends AppCompatActivity {
     private String kampID;
     private Kamp kamp;
     private KampMalzemeAdapter kampMalzemeAdapter;
-    private MalzemeAdapter malzemeAdapter;
     private List<Malzeme> malzemeList = new ArrayList<Malzeme>();
     private List<Malzeme> kampMalzemeList = new ArrayList<Malzeme>();
 
@@ -100,12 +99,7 @@ public class KampMalzemeListActivity extends AppCompatActivity {
                         return o1.getAdi().compareTo(o2.getAdi());
                     }
                 });
-                Collections.sort(malzemeList, new Comparator<Malzeme>() {
-                    @Override
-                    public int compare(Malzeme o1, Malzeme o2) {
-                        return o1.getTuru().compareTo(o2.getTuru());
-                    }
-                });
+
                 kampMalzemeAdapter.notifyDataSetChanged();
             }
 

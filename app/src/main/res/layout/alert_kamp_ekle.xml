@@ -13,10 +13,11 @@
         android:layout_height="?android:actionBarSize"
         android:ems="10"
         android:background="@android:color/transparent"
-        android:inputType="text"
+        android:inputType="textPersonName"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:hint="Kamp Adı"
+
         />
 
     <View
@@ -29,7 +30,7 @@
         android:layout_height="?android:actionBarSize"
         android:ems="10"
         android:background="@android:color/transparent"
-        android:inputType="text"
+        android:inputType="textPersonName"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:hint="Açıklama"

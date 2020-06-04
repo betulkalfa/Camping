@@ -107,26 +107,11 @@ public class GitDetayActivity extends AppCompatActivity {
 
 
                 }
-                Collections.sort(olanMalzemeList, new Comparator<Malzeme>() {
-                    @Override
-                    public int compare(Malzeme o1, Malzeme o2) {
-                        return o1.getTuru().compareTo(o2.getTuru());
 
-                    }
-
-                });
                 Collections.sort(olanMalzemeList, new Comparator<Malzeme>() {
                     @Override
                     public int compare(Malzeme o1, Malzeme o2) {
                         return o1.getAdi().compareTo(o2.getAdi());
-
-                    }
-
-                });
-                Collections.sort(kampMalzemeList, new Comparator<Malzeme>() {
-                    @Override
-                    public int compare(Malzeme o1, Malzeme o2) {
-                        return o1.getTuru().compareTo(o2.getTuru());
 
                     }
 
