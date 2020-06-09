@@ -16,8 +16,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,9 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sbk.camping.kamp.malzeme.KampMalzemeListActivity;
 import com.sbk.camping.R;
-import com.sbk.camping.model.Cihaz;
 import com.sbk.camping.model.Kamp;
-import com.sbk.camping.model.Malzeme;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,20 +35,24 @@ import java.util.List;
 public class KampListActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
-    private DatabaseReference myRef;
+    private DatabaseReference myRef,kampRef;
     private KampAdapter kampAdapter;
     private List<Kamp> kampList = new ArrayList<Kamp>();
-    private  DatabaseReference ref;
-    private Cihaz cihaz;
+    String cihazID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kamp_list);
 
-
+        cihazID= Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("kamp");
+        myRef = database.getReference();
+        kampRef= myRef.child(cihazID).child("kamp");
+
+
+
         kampAdapter = new KampAdapter(kampList,this);
+
 
 
 
@@ -82,7 +84,7 @@ public class KampListActivity extends AppCompatActivity {
 
     }
     private void tumKampListele(){
-        myRef.addValueEventListener(new ValueEventListener() {
+        kampRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -91,7 +93,7 @@ public class KampListActivity extends AppCompatActivity {
                     Kamp malzeme = postSnapshot.getValue(Kamp.class);
                     kampList.add(malzeme);
                 }
-                Collections.sort(kampList, new Comparator<Kamp>() {
+               Collections.sort(kampList, new Comparator<Kamp>() {
                     @Override
                     public int compare(Kamp o1, Kamp o2) {
                         return o1.getTuru().compareTo(o2.getTuru());
@@ -138,8 +140,15 @@ public class KampListActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                String id = myRef.push().getKey();
-                myRef.child(id).setValue(new Kamp(id, kampAdi.getText().toString(), aciklama.getText().toString(),null));
+                if(!kampAdi.getText().toString().isEmpty()){
+
+                     String id = kampRef.push().getKey();
+                     kampRef.child(id).setValue(new Kamp(id, kampAdi.getText().toString(), aciklama.getText().toString(),null));
+
+                 }
+               else {
+                     Toast.makeText(getApplicationContext(),"Kamp Adı Giriniz",Toast.LENGTH_LONG).show();
+                 }
 
 
 
@@ -186,7 +195,7 @@ public class KampListActivity extends AppCompatActivity {
     }
     public void arama(final String aramKelime){
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        kampRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

@@ -4,6 +4,7 @@ package com.sbk.camping.kamp;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sbk.camping.R;
 import com.sbk.camping.model.Kamp;
-import com.sbk.camping.model.Malzeme;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,8 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
 
     private List<Kamp> kampList;
     DatabaseReference myRef;
+    DatabaseReference ref;
+    Task<Void> def;
     private Context context;
     FirebaseDatabase database;
 
@@ -79,15 +82,9 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(holder.button,"Silinsin mi?",Snackbar.LENGTH_SHORT)
-                        .setAction("Evet", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
 
-                                deleteKamp(kamp.getId());
-                            }
-                        })
-                        .show();
+                deleteKamp(kamp.getId());
+
             }
         });
 
@@ -103,12 +100,35 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
     public int getItemCount() {
         return kampList != null ? kampList.size() : 0;
     }
-    private void deleteKamp(String id) {
 
-        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("kamp").child(id);
-        dR.removeValue();
+
+
+    private void deleteKamp(final String id) {
+        final AlertDialog.Builder ad = new AlertDialog.Builder(context);
+        ad.setTitle("Kamp Malzemesi Silinsin mi?");
+
+        ad.setPositiveButton("Sil", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                    String cihazID= Settings.Secure.getString(context.getContentResolver() ,Settings.Secure.ANDROID_ID);
+
+                    database = FirebaseDatabase.getInstance();
+                    myRef = database.getReference(cihazID);
+                    ref= myRef.child("kamp").child(id);
+
+                    ref.removeValue();
+
+
+            }
+        });
+
+        ad.setNegativeButton("İptal", null);
+
+        ad.create().show();
 
     }
+
     public void updateKamp(final Kamp kamp){
 
 
@@ -138,12 +158,12 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
                 bilgiler.put("adi",adi);
                 bilgiler.put("turu",turu);
 
+                String cihazID=Settings.Secure.getString(context.getContentResolver() ,Settings.Secure.ANDROID_ID);
+
                 database = FirebaseDatabase.getInstance();
-                myRef = database.getReference("kamp");
+                myRef = database.getReference(cihazID);
 
-                myRef.child(kamp.getId()).updateChildren(bilgiler);
-
-
+                def= myRef.child("kamp").child(kamp.getId()).updateChildren(bilgiler);
 
             }
         });

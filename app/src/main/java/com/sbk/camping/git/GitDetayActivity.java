@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
@@ -17,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sbk.camping.R;
 import com.sbk.camping.kamp.malzeme.KampMalzemeAdapter;
+import com.sbk.camping.malzeme.MalzemeAdapter;
 import com.sbk.camping.model.Kamp;
 import com.sbk.camping.model.Malzeme;
 
@@ -28,7 +30,7 @@ import java.util.List;
 public class GitDetayActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
-    private DatabaseReference kampRef;
+    private DatabaseReference kampRef, df;
     private String kampID;
     private Kamp kamp;
     private KampMalzemeAdapter kampMalzemeAdapter;
@@ -41,26 +43,27 @@ public class GitDetayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_git_detay);
 
 
-
+        final String cihazID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         database = FirebaseDatabase.getInstance();
-        kampRef = database.getReference("kamp");
+        kampRef = database.getReference(cihazID);
+        df = kampRef.child("kamp");
 
         Bundle bundle = getIntent().getExtras();
-        if (bundle !=null){
+        if (bundle != null) {
             kampID = bundle.getString("KampID");
         }
 
 
-        kampMalzemeAdapter = new KampMalzemeAdapter(kampMalzemeList,olanMalzemeList);
+        kampMalzemeAdapter = new KampMalzemeAdapter(kampMalzemeList, olanMalzemeList);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setAdapter(kampMalzemeAdapter);
 
         kampMalzemeAdapter.setOnClickListener(new KampMalzemeAdapter.OnClickListener() {
             @Override
             public void onSelect(Malzeme item) {
-                DatabaseReference dr = kampRef.child(kampID);
+                DatabaseReference dr = df.child(kampID);
                 List<Malzeme> ml = new ArrayList<Malzeme>();
-                if (kamp.getOlanMalzemeList()!=null){
+                if (kamp.getOlanMalzemeList() != null) {
                     ml.addAll(kamp.getOlanMalzemeList());
                 }
 
@@ -72,15 +75,15 @@ public class GitDetayActivity extends AppCompatActivity {
             @Override
             public void onUnSelect(Malzeme item) {
 
-                DatabaseReference dr = kampRef.child(kampID);
+                DatabaseReference dr = df.child(kampID);
                 List<Malzeme> ml = new ArrayList<Malzeme>();
-                if (kamp.getOlanMalzemeList()!=null){
+                if (kamp.getOlanMalzemeList() != null) {
                     ml.addAll(kamp.getOlanMalzemeList());
 
                 }
 
-                for (Malzeme mItem : ml){
-                    if (mItem.getId().equals(item.getId())){
+                for (Malzeme mItem : ml) {
+                    if (mItem.getId().equals(item.getId())) {
                         ml.remove(mItem);
                         break;
                     }
@@ -89,7 +92,7 @@ public class GitDetayActivity extends AppCompatActivity {
                 dr.setValue(kamp);
             }
         });
-        kampRef.addValueEventListener(new ValueEventListener() {
+        df.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -139,7 +142,8 @@ public class GitDetayActivity extends AppCompatActivity {
         });
 
     }
-   /* @Override
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         SearchView sv;
         sv = new SearchView(this);
@@ -161,21 +165,21 @@ public class GitDetayActivity extends AppCompatActivity {
 
         menu.add("Ara").setActionView(sv).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        *//*menu.add("Kamp Bitir").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        menu.add("Kamp Bitir").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                finish();
+                olanMalzemeList.isEmpty();
 
 
                 return true;
             }
         }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-*//*
+
         return true;
     }
     public void arama(final String aramKelime){
 
-        kampRef.addValueEventListener(new ValueEventListener() {
+        df.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -185,7 +189,7 @@ public class GitDetayActivity extends AppCompatActivity {
 
                     Malzeme malzeme = d.getValue(Malzeme.class);
 
-                    if(malzeme.getTuru().contains(aramKelime )|| malzeme.getAdi().contains(aramKelime) ){
+                    if( malzeme.getAdi().contains(aramKelime) ){
                         malzeme.setId(d.getKey());
                         olanMalzemeList.add(malzeme);
 
@@ -201,5 +205,6 @@ public class GitDetayActivity extends AppCompatActivity {
             }
         });
 
-    }*/
+    }
+
 }

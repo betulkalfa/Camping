@@ -4,6 +4,7 @@ package com.sbk.camping.malzeme;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sbk.camping.R;
-import com.sbk.camping.kamp.KampAdapter;
-import com.sbk.camping.model.Kamp;
 import com.sbk.camping.model.Malzeme;
 
 import java.util.HashMap;
@@ -33,14 +32,20 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
 
     private List<Malzeme> malzemeList;
     DatabaseReference myRef;
+    DatabaseReference ref;
+    Task<Void> df;
     private Context context;
     FirebaseDatabase database;
     private Malzeme malzeme;
 
 
+
+
+
     public MalzemeAdapter(List<Malzeme> malzemeList, Context context) {
         this.malzemeList = malzemeList;
         this.context=context;
+
     }
 
     public class RowHolder extends RecyclerView.ViewHolder {
@@ -65,6 +70,7 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
 
     @Override
     public void onBindViewHolder(@NonNull final RowHolder holder, int position) {
+
        final Malzeme malzeme = malzemeList.get(position);
        holder.title.setText(malzeme.getAdi());
        holder.description.setText(malzeme.getTuru());
@@ -72,15 +78,7 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
            @Override
            public void onClick(View v) {
 
-               Snackbar.make(holder.button,"Silinsin mi?",Snackbar.LENGTH_SHORT)
-                       .setAction("Evet", new View.OnClickListener() {
-                           @Override
-                           public void onClick(View view) {
-
-                              deleteMalzeme(malzeme.getId());
-                           }
-                       })
-                       .show();
+              deleteMalzeme(malzeme.getId());
            }
        });
 
@@ -99,12 +97,35 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
         return malzemeList != null ? malzemeList.size() : 0;
     }
 
-    private void deleteMalzeme(String id) {
 
-        DatabaseReference dR = FirebaseDatabase.getInstance().getReference("malzeme").child(id);
-        dR.removeValue();
+    private void deleteMalzeme(final  String id) {
+
+        final AlertDialog.Builder ad = new AlertDialog.Builder(context);
+        ad.setTitle("Kamp Malzemesi Silinsin mi?");
+
+        ad.setPositiveButton("Sil", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                String cihazID=Settings.Secure.getString(context.getContentResolver() ,Settings.Secure.ANDROID_ID);
+
+                database = FirebaseDatabase.getInstance();
+                myRef = database.getReference(cihazID);
+                ref= myRef.child("malzeme").child(id);
+
+                ref.removeValue();
+
+
+            }
+        });
+
+        ad.setNegativeButton("İptal", null);
+
+        ad.create().show();
 
     }
+
+
 
     public void updateMalzeme(final Malzeme malzeme){
 
@@ -119,11 +140,12 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
         final AlertDialog.Builder ad = new AlertDialog.Builder(context);
         ad.setTitle("Kamp Malzemesi Güncelleyin");
         ad.setView(tasarim);
+
         spMalzemeTur.setSelection(spMalzemeTur.getSelectedItemPosition());
         spMalzemeTur.getSelectedItem();
 
        edtMalzemeAdi.setText(malzeme.getAdi());
-      // spMalzemeTur.setSelection(malzeme.getTuru());
+
 
 
         ad.setPositiveButton("Güncelle", new DialogInterface.OnClickListener() {
@@ -140,10 +162,16 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
                 bilgiler.put("adi",adi);
                 bilgiler.put("turu",turu);
 
-                database = FirebaseDatabase.getInstance();
-                myRef = database.getReference("malzeme");
+                String cihazID=Settings.Secure.getString(context.getContentResolver() ,Settings.Secure.ANDROID_ID);
 
-                myRef.child(malzeme.getId()).updateChildren(bilgiler);
+                database = FirebaseDatabase.getInstance();
+                myRef = database.getReference(cihazID);
+
+                df= myRef.child("malzeme").child(malzeme.getId()).updateChildren(bilgiler);
+
+
+
+               // myRef.child(malzeme.getId()).updateChildren(bilgiler);
 
 
             }
@@ -154,5 +182,17 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
         ad.create().show();
 
     }
+    private OnClickListener onClickListener;
 
+    public void setOnClickListener(MalzemeAdapter.OnClickListener onClickListener) {
+        this.onClickListener = onClickListener;
+
+    }
+
+    public interface OnClickListener{
+        void onSelect(Malzeme item);
+        void onUnSelect(Malzeme item);
+    }
 }
+
+

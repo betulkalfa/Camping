@@ -1,25 +1,20 @@
 package com.sbk.camping.malzeme;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,11 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sbk.camping.R;
-import com.sbk.camping.model.Cihaz;
 import com.sbk.camping.model.Malzeme;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -42,23 +35,27 @@ import java.util.List;
 public class MalzemeListActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
-    private DatabaseReference myRef;
-    RecyclerView rv ;
+    private DatabaseReference myRef, ref;
+    ;
     private MalzemeAdapter malzemeAdapter;
-    private List<Malzeme> malzemeList = new ArrayList<Malzeme>();
+    private List malzemeList = new ArrayList<>();
     private Malzeme malzeme;
-    private Cihaz cihaz;
-    private List<Cihaz> cihazList=new ArrayList<Cihaz>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_malzeme_list);
+        final Malzeme malzeme = new Malzeme();
+
+        String cihaID = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("malzeme");
+        myRef = database.getReference();
+        ref = myRef.child(cihaID).child("malzeme");
 
-        malzemeAdapter = new MalzemeAdapter(malzemeList,this);
+
+        malzemeAdapter = new MalzemeAdapter(malzemeList, this);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setAdapter(malzemeAdapter);
@@ -69,7 +66,7 @@ public class MalzemeListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                malzemeEkleDialog();
+                malzemeEkleDialog(malzeme);
 
 
             }
@@ -77,9 +74,10 @@ public class MalzemeListActivity extends AppCompatActivity {
 
 
     }
-    public void tumMalzeme(){
 
-        myRef.addValueEventListener(new ValueEventListener() {
+    public void tumMalzeme() {
+
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -88,14 +86,12 @@ public class MalzemeListActivity extends AppCompatActivity {
                     Malzeme malzeme = postSnapshot.getValue(Malzeme.class);
                     malzemeList.add(malzeme);
 
-
                     Collections.sort(malzemeList, new Comparator<Malzeme>() {
                         @Override
                         public int compare(Malzeme o1, Malzeme o2) {
                             return o1.getAdi().compareTo(o2.getAdi());
                         }
                     });
-
 
                 }
                 malzemeAdapter.notifyDataSetChanged();
@@ -108,36 +104,47 @@ public class MalzemeListActivity extends AppCompatActivity {
 
     }
 
-    void malzemeEkleDialog() {
+
+    void malzemeEkleDialog(final Malzeme malzeme) {
+
 
         LayoutInflater layout = LayoutInflater.from(this);
         final View tasarim = layout.inflate(R.layout.alert_malzeme_ekle, null);
         final EditText edtMalzemeAdi = tasarim.findViewById(R.id.edtMalzemeUrunAd);
         final Spinner spMalzemeTur = tasarim.findViewById(R.id.sp);
 
+        final AlertDialog.Builder ad = new AlertDialog.Builder(this);
 
-
-        AlertDialog.Builder ad = new AlertDialog.Builder(this);
         ad.setTitle("Kamp Malzemesi Ekleyin");
         ad.setView(tasarim);
         ad.setPositiveButton("Ekle", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                String id = myRef.push().getKey();
-          //     id= Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
+                String id = ref.push().getKey();
 
-            if(!edtMalzemeAdi.getText().toString().isEmpty()) {
 
-                    myRef.child(id).setValue(new Malzeme(id, edtMalzemeAdi.getText().toString(), spMalzemeTur.getItemAtPosition(spMalzemeTur.getSelectedItemPosition()).toString()));
-                }
+                if (!edtMalzemeAdi.getText().toString().isEmpty()) {
 
-                else{
-                    Toast.makeText(getApplicationContext(),"Lütfen Malzeme Adı Giriniz.",Toast.LENGTH_LONG).show();
+
+                    String kelime = arama(edtMalzemeAdi.getText().toString());
+
+
+                    if (edtMalzemeAdi.getText().toString() != kelime) {
+
+                        ref.child(id).setValue(new Malzeme(id, edtMalzemeAdi.getText().toString(), spMalzemeTur.getItemAtPosition(spMalzemeTur.getSelectedItemPosition()).toString()));
+                        tumMalzeme();
+
+                    } else {
+                        tumMalzeme();
+                        Toast.makeText(getApplicationContext(), "Lütfen Farklı Malzeme Adı Giriniz.", Toast.LENGTH_LONG).show();
+                    }
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Lütfen Malzeme Adı Giriniz.", Toast.LENGTH_LONG).show();
+
                 }
             }
-
-
 
 
         });
@@ -170,7 +177,7 @@ public class MalzemeListActivity extends AppCompatActivity {
         menu.add("Yenile").setIcon(R.drawable.ic_refresh_black_24dp).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-               tumMalzeme();
+                tumMalzeme();
                 return true;
             }
         }).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -178,19 +185,19 @@ public class MalzemeListActivity extends AppCompatActivity {
         return true;
     }
 
-    public void arama(final String aramKelime){
+    public String arama(final String aramKelime) {
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 malzemeList.clear();
 
-                for(DataSnapshot d:dataSnapshot.getChildren()){
+                for (DataSnapshot d : dataSnapshot.getChildren()) {
 
                     Malzeme malzeme = d.getValue(Malzeme.class);
 
-                    if(malzeme.getTuru().contains(aramKelime )|| malzeme.getAdi().contains(aramKelime) ){
+                    if (malzeme.getAdi().contains(aramKelime)) {
                         malzeme.setId(d.getKey());
                         malzemeList.add(malzeme);
 
@@ -206,7 +213,6 @@ public class MalzemeListActivity extends AppCompatActivity {
             }
         });
 
+        return aramKelime;
     }
-
-
 }

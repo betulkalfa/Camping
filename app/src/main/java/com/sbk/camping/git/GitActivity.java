@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
@@ -28,7 +29,7 @@ import java.util.List;
 public class GitActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
-    private DatabaseReference myRef;
+    private DatabaseReference kampRef,df;
 
     private GitKampAdapter kampAdapter;
     private List<Kamp> kampList = new ArrayList<Kamp>();
@@ -37,9 +38,12 @@ public class GitActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_git);
 
-
+        final String cihazID = Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("kamp");
+        kampRef = database.getReference(cihazID);
+        df= kampRef.child("kamp");
+
+
         kampAdapter = new GitKampAdapter(kampList);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -55,7 +59,7 @@ public class GitActivity extends AppCompatActivity {
             }
         });
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        df.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -117,7 +121,7 @@ public class GitActivity extends AppCompatActivity {
     }
     public void arama(final String aramKelime){
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        df.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

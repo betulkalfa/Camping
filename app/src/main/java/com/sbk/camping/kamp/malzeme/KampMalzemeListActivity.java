@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
@@ -34,12 +35,13 @@ import static android.content.Context.MODE_PRIVATE;
 public class KampMalzemeListActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
-    private DatabaseReference malzemeRef,kampRef;
+    private DatabaseReference malzemeRef,kampRef,df,rf;
     private String kampID;
     private Kamp kamp;
     private KampMalzemeAdapter kampMalzemeAdapter;
     private List<Malzeme> malzemeList = new ArrayList<Malzeme>();
     private List<Malzeme> kampMalzemeList = new ArrayList<Malzeme>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +49,14 @@ public class KampMalzemeListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_kamp_malzeme_list);
 
         database = FirebaseDatabase.getInstance();
-        kampRef = database.getReference("kamp");
-        malzemeRef = database.getReference("malzeme");
+
+        final String cihazID =Settings.Secure.getString(getContentResolver(),Settings.Secure.ANDROID_ID);
+
+
+        kampRef = database.getReference(cihazID);
+        df= kampRef.child("kamp");
+        malzemeRef = database.getReference(cihazID);
+        rf=malzemeRef.child("malzeme");
 
         Bundle bundle = getIntent().getExtras();
         if (bundle !=null){
@@ -61,7 +69,7 @@ public class KampMalzemeListActivity extends AppCompatActivity {
 
         kampMalzemeListele();
 
-        kampRef.addValueEventListener(new ValueEventListener() {
+        df.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -84,7 +92,7 @@ public class KampMalzemeListActivity extends AppCompatActivity {
             }
         });
 
-        malzemeRef.addValueEventListener(new ValueEventListener() {
+        rf.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -93,13 +101,13 @@ public class KampMalzemeListActivity extends AppCompatActivity {
                     Malzeme malzeme = postSnapshot.getValue(Malzeme.class);
                     malzemeList.add(malzeme);
                 }
-                Collections.sort(malzemeList, new Comparator<Malzeme>() {
+               /* Collections.sort(malzemeList, new Comparator<Malzeme>() {
                     @Override
                     public int compare(Malzeme o1, Malzeme o2) {
                         return o1.getAdi().compareTo(o2.getAdi());
                     }
                 });
-
+*/
                 kampMalzemeAdapter.notifyDataSetChanged();
             }
 
@@ -113,7 +121,7 @@ public class KampMalzemeListActivity extends AppCompatActivity {
         kampMalzemeAdapter.setOnClickListener(new KampMalzemeAdapter.OnClickListener() {
             @Override
             public void onSelect(Malzeme item) {
-                DatabaseReference dr = kampRef.child(kampID);
+                DatabaseReference dr = df.child(kampID);
                 List<Malzeme> ml = new ArrayList<Malzeme>();
 
                 if (kamp.getMalzemeList()!=null){
@@ -127,7 +135,7 @@ public class KampMalzemeListActivity extends AppCompatActivity {
 
             @Override
             public void onUnSelect(Malzeme item) {
-                DatabaseReference dr = kampRef.child(kampID);
+                DatabaseReference dr = df.child(kampID);
                 List<Malzeme> ml = new ArrayList<Malzeme>();
                 if (kamp.getMalzemeList()!=null){
                     ml.addAll(kamp.getMalzemeList());
