@@ -16,7 +16,9 @@
         android:inputType="textPersonName"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:hint="Malzeme Adı"/>
+        android:hint="Malzeme Adı"
+        android:selectAllOnFocus="true"
+        />
 
     <View
         android:layout_width="match_parent"

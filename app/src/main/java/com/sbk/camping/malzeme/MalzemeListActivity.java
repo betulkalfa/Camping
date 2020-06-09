@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -111,6 +112,11 @@ public class MalzemeListActivity extends AppCompatActivity {
         LayoutInflater layout = LayoutInflater.from(this);
         final View tasarim = layout.inflate(R.layout.alert_malzeme_ekle, null);
         final EditText edtMalzemeAdi = tasarim.findViewById(R.id.edtMalzemeUrunAd);
+
+        if(edtMalzemeAdi.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+
         final Spinner spMalzemeTur = tasarim.findViewById(R.id.sp);
 
         final AlertDialog.Builder ad = new AlertDialog.Builder(this);
@@ -126,11 +132,9 @@ public class MalzemeListActivity extends AppCompatActivity {
 
                 if (!edtMalzemeAdi.getText().toString().isEmpty()) {
 
+                boolean a=kelimeBul(malzeme.getAdi(),malzemeList).equals(edtMalzemeAdi.getText().toString());
 
-                    String kelime = arama(edtMalzemeAdi.getText().toString());
-
-
-                    if (edtMalzemeAdi.getText().toString() != kelime) {
+                    if (a==false) {
 
                         ref.child(id).setValue(new Malzeme(id, edtMalzemeAdi.getText().toString(), spMalzemeTur.getItemAtPosition(spMalzemeTur.getSelectedItemPosition()).toString()));
                         tumMalzeme();
@@ -215,4 +219,19 @@ public class MalzemeListActivity extends AppCompatActivity {
 
         return aramKelime;
     }
+    public List<Malzeme> kelimeBul (String kelime, List<Malzeme>malzemeList)
+            {
+
+        for (Malzeme malzeme : malzemeList) {
+
+            if (malzeme.getAdi().equals(kelime)) {
+                malzeme.setAdi(malzeme.getAdi());
+                malzemeList.add(malzeme);
+            }
+        }
+        return malzemeList;
+            }
+
+
+
 }
