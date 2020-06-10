@@ -1,6 +1,7 @@
 package com.sbk.camping.malzeme;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.Spinner;
@@ -39,7 +40,7 @@ public class MalzemeListActivity extends AppCompatActivity {
     private DatabaseReference myRef, ref;
     ;
     private MalzemeAdapter malzemeAdapter;
-    private List malzemeList = new ArrayList<>();
+    private List malzemeList = new ArrayList<Malzeme>();
     private Malzeme malzeme;
 
 
@@ -113,9 +114,10 @@ public class MalzemeListActivity extends AppCompatActivity {
         final View tasarim = layout.inflate(R.layout.alert_malzeme_ekle, null);
         final EditText edtMalzemeAdi = tasarim.findViewById(R.id.edtMalzemeUrunAd);
 
-        if(edtMalzemeAdi.requestFocus()) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        }
+
+        edtMalzemeAdi.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
         final Spinner spMalzemeTur = tasarim.findViewById(R.id.sp);
 
@@ -127,20 +129,34 @@ public class MalzemeListActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
+
+
                 String id = ref.push().getKey();
 
+              /* boolean a= malzemeList.equals(kelimeBul(edtMalzemeAdi.getText().toString(),malzemeList));
+
+                boolean b= (malzemeList.equals(arama(edtMalzemeAdi.getText().toString())));
+
+                String kelime = arama(edtMalzemeAdi.getText().toString());
+
+                boolean c=(kelime.equals(edtMalzemeAdi.getText().toString()));
+*/
+
+
+
+
+                String kelime1= arama(edtMalzemeAdi.getText().toString());
+                boolean p=malzemeList.equals(kelime1);
 
                 if (!edtMalzemeAdi.getText().toString().isEmpty()) {
 
-                boolean a=kelimeBul(malzeme.getAdi(),malzemeList).equals(edtMalzemeAdi.getText().toString());
-
-                    if (a==false) {
+                    if (p==false) {
 
                         ref.child(id).setValue(new Malzeme(id, edtMalzemeAdi.getText().toString(), spMalzemeTur.getItemAtPosition(spMalzemeTur.getSelectedItemPosition()).toString()));
-                        tumMalzeme();
+
 
                     } else {
-                        tumMalzeme();
+
                         Toast.makeText(getApplicationContext(), "Lütfen Farklı Malzeme Adı Giriniz.", Toast.LENGTH_LONG).show();
                     }
 
@@ -148,11 +164,20 @@ public class MalzemeListActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Lütfen Malzeme Adı Giriniz.", Toast.LENGTH_LONG).show();
 
                 }
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(edtMalzemeAdi.getWindowToken(), 0);
+
             }
 
-
         });
-        ad.setNegativeButton("İptal", null);
+        ad.setNegativeButton("İptal", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(edtMalzemeAdi.getWindowToken(), 0);
+
+            }
+        });
         ad.create().show();
     }
 
@@ -173,9 +198,12 @@ public class MalzemeListActivity extends AppCompatActivity {
             public boolean onQueryTextChange(String newText) {
                 arama(newText);
 
+
                 return false;
             }
+
         });
+        tumMalzeme();
         menu.add("Ara").setActionView(sv).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
         menu.add("Yenile").setIcon(R.drawable.ic_refresh_black_24dp).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
@@ -201,7 +229,7 @@ public class MalzemeListActivity extends AppCompatActivity {
 
                     Malzeme malzeme = d.getValue(Malzeme.class);
 
-                    if (malzeme.getAdi().contains(aramKelime)) {
+                    if (malzeme.getAdi().equals(aramKelime)) {
                         malzeme.setId(d.getKey());
                         malzemeList.add(malzeme);
 
@@ -219,17 +247,19 @@ public class MalzemeListActivity extends AppCompatActivity {
 
         return aramKelime;
     }
-    public List<Malzeme> kelimeBul (String kelime, List<Malzeme>malzemeList)
-            {
+    public List<Malzeme> kelimeBul (String kelime, List<Malzeme>malzemeList)  {
 
-        for (Malzeme malzeme : malzemeList) {
+        malzemeList.clear();
+        for (Malzeme m : malzemeList) {
+             m.getAdi();
 
             if (malzeme.getAdi().equals(kelime)) {
-                malzeme.setAdi(malzeme.getAdi());
+                malzeme.setId(malzeme.getAdi());
                 malzemeList.add(malzeme);
             }
         }
         return malzemeList;
+
             }
 
 
