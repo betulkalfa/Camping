@@ -14,6 +14,7 @@
         android:ems="10"
         android:background="@android:color/transparent"
         android:inputType="textPersonName"
+
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:hint="Kamp Adı"

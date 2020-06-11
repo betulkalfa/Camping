@@ -81,8 +81,11 @@ public class KampMalzemeListActivity extends AppCompatActivity {
 
                 kampMalzemeAdapter.notifyDataSetChanged();
 
-              getSupportActionBar().setTitle(kamp.getAdi());
-              getSupportActionBar().setSubtitle(kamp.getTuru());
+                try {
+                    getSupportActionBar().setTitle(kamp.getAdi());
+                    getSupportActionBar().setSubtitle(kamp.getTuru());
+                }
+                catch (Exception e){}
 
             }
 
@@ -101,13 +104,13 @@ public class KampMalzemeListActivity extends AppCompatActivity {
                     Malzeme malzeme = postSnapshot.getValue(Malzeme.class);
                     malzemeList.add(malzeme);
                 }
-               /* Collections.sort(malzemeList, new Comparator<Malzeme>() {
+                Collections.sort(malzemeList, new Comparator<Malzeme>() {
                     @Override
                     public int compare(Malzeme o1, Malzeme o2) {
                         return o1.getAdi().compareTo(o2.getAdi());
                     }
                 });
-*/
+
                 kampMalzemeAdapter.notifyDataSetChanged();
             }
 
@@ -154,7 +157,7 @@ public class KampMalzemeListActivity extends AppCompatActivity {
         });
     }
 
-   /* @Override
+   @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         SearchView sv;
         sv = new SearchView(this);
@@ -190,7 +193,7 @@ public class KampMalzemeListActivity extends AppCompatActivity {
 
     public void arama(final String aramKelime){
 
-        kampRef.addValueEventListener(new ValueEventListener() {
+        rf.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -200,7 +203,7 @@ public class KampMalzemeListActivity extends AppCompatActivity {
 
                     Malzeme malzeme = d.getValue(Malzeme.class);
 
-                    if(malzeme.getTuru().contains(aramKelime )|| malzeme.getAdi().contains(aramKelime) ){
+                    if(malzeme.getTuru().toLowerCase().contains(aramKelime )|| malzeme.getAdi().toLowerCase().contains(aramKelime) ){
                         malzeme.setId(d.getKey());
                         malzemeList.add(malzeme);
                     }
@@ -214,7 +217,7 @@ public class KampMalzemeListActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-    }*/
+    }
 
 
 }

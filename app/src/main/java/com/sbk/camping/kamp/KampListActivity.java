@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -49,12 +51,7 @@ public class KampListActivity extends AppCompatActivity {
         myRef = database.getReference();
         kampRef= myRef.child(cihazID).child("kamp");
 
-
-
         kampAdapter = new KampAdapter(kampList,this);
-
-
-
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setAdapter(kampAdapter);
@@ -75,10 +72,6 @@ public class KampListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
 
-            @Override
-            public void sil(String id) {
-
-            }
         });
         tumKampListele();
 
@@ -109,17 +102,12 @@ public class KampListActivity extends AppCompatActivity {
                 });
 
                 kampAdapter.notifyDataSetChanged();
-
-
             }
-
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
             }
         });
-
-
     }
 
     private void kampEkleDialog() {
@@ -128,37 +116,49 @@ public class KampListActivity extends AppCompatActivity {
         View tasarim = layout.inflate(R.layout.alert_kamp_ekle, null);
         final EditText kampAdi = tasarim.findViewById(R.id.kampAdi);
         final EditText aciklama = tasarim.findViewById(R.id.aciklama);
-
+        kampAdi.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
 
         AlertDialog.Builder ad = new AlertDialog.Builder(this);
         ad.setTitle("Kamp Ekleyin");
-
 
         ad.setView(tasarim);
         ad.setPositiveButton("Ekle", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
+                String id = kampRef.push().getKey();
                 if(!kampAdi.getText().toString().isEmpty()){
 
-                     String id = kampRef.push().getKey();
-                     kampRef.child(id).setValue(new Kamp(id, kampAdi.getText().toString(), aciklama.getText().toString(),null));
+                    if((!kelimeBulAd(kampAdi.getText().toString(),kampList) || !kelimeBulTur(aciklama.getText().toString(),kampList))||(!kelimeBulAd(kampAdi.getText().toString(),kampList) || !kelimeBulTur(aciklama.getText().toString(),kampList))){
 
-                 }
-               else {
-                     Toast.makeText(getApplicationContext(),"Kamp Adı Giriniz",Toast.LENGTH_LONG).show();
-                 }
+                        kampRef.child(id).setValue(new Kamp(id, kampAdi.getText().toString(), aciklama.getText().toString(),null));
 
+                    }
+                    else {
 
+                        Toast.makeText(getApplicationContext(),"Farklı Kamp Adı Giriniz",Toast.LENGTH_LONG).show();
+                    }
 
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),"Kamp Adı Giriniz",Toast.LENGTH_LONG).show();
+                }
 
-
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(kampAdi.getWindowToken(), 0);
             }
         });
 
-
-        ad.setNegativeButton("İptal", null);
+        ad.setNegativeButton("İptal", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(kampAdi.getWindowToken(), 0);
+            }
+        });
 
         ad.create().show();
     }
@@ -205,21 +205,43 @@ public class KampListActivity extends AppCompatActivity {
 
                     Kamp kamp = d.getValue(Kamp.class);
 
-                    if(kamp.getTuru().contains(aramKelime )|| kamp.getAdi().contains(aramKelime) ){
+                    if(kamp.getTuru().toLowerCase().contains(aramKelime )|| kamp.getAdi().toLowerCase().contains(aramKelime) ){
                         kamp.setId(d.getKey());
                         kampList.add(kamp);
-
                     }
-
                 }
                 kampAdapter.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+
+    }
+    public boolean kelimeBulAd(String kelime, List<Kamp> kampList) {
+
+        for (Kamp k : kampList) {
+
+            if (k.getAdi().toLowerCase().equals(kelime.toLowerCase())) {
+                return true;
+            }
+
+        }
+        return false;
+
+    }
+
+    public boolean kelimeBulTur(String kelime, List<Kamp> kampList) {
+
+        for (Kamp k : kampList) {
+
+            if (k.getTuru().toLowerCase().equals(kelime.toLowerCase())) {
+                return true;
+            }
+
+        }
+        return false;
 
     }
 

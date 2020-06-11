@@ -96,7 +96,7 @@ public class GitActivity extends AppCompatActivity {
         });
     }
 
-    @Override
+   @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         SearchView sv;
         sv = new SearchView(this);
@@ -131,7 +131,7 @@ public class GitActivity extends AppCompatActivity {
 
                     Kamp kamp = d.getValue(Kamp.class);
 
-                    if(kamp.getTuru().contains(aramKelime )|| kamp.getAdi().contains(aramKelime) ){
+                    if(kamp.getTuru().toLowerCase().contains(aramKelime )|| kamp.getAdi().toLowerCase().contains(aramKelime) ){
                         kamp.setId(d.getKey());
                         kampList.add(kamp);
 

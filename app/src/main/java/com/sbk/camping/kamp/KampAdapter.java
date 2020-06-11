@@ -4,10 +4,12 @@ package com.sbk.camping.kamp;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -21,7 +23,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.sbk.camping.MainActivity;
 import com.sbk.camping.R;
+import com.sbk.camping.malzeme.MalzemeListActivity;
 import com.sbk.camping.model.Kamp;
 
 import java.util.HashMap;
@@ -56,7 +60,6 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
 
         }
     }
-
 
     @NonNull
     @Override
@@ -101,8 +104,6 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
         return kampList != null ? kampList.size() : 0;
     }
 
-
-
     private void deleteKamp(final String id) {
         final AlertDialog.Builder ad = new AlertDialog.Builder(context);
         ad.setTitle("Kamp Malzemesi Silinsin mi?");
@@ -111,15 +112,13 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                    String cihazID= Settings.Secure.getString(context.getContentResolver() ,Settings.Secure.ANDROID_ID);
+                String cihazID= Settings.Secure.getString(context.getContentResolver() ,Settings.Secure.ANDROID_ID);
 
-                    database = FirebaseDatabase.getInstance();
-                    myRef = database.getReference(cihazID);
-                    ref= myRef.child("kamp").child(id);
+                database = FirebaseDatabase.getInstance();
+                myRef = database.getReference(cihazID);
+                ref= myRef.child("kamp").child(id);
 
-                    ref.removeValue();
-
-
+                ref.removeValue();
             }
         });
 
@@ -131,12 +130,13 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
 
     public void updateKamp(final Kamp kamp){
 
-
-
         LayoutInflater layout = LayoutInflater.from(context);
         final View tasarim = layout.inflate(R.layout.alert_kamp_ekle, null);
         final EditText edtAdi = tasarim.findViewById(R.id.kampAdi);
         final EditText edtTur = tasarim.findViewById(R.id.aciklama);
+        edtAdi.requestFocus();
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         final AlertDialog.Builder ad = new AlertDialog.Builder(context);
 
         ad.setTitle("Kamp  Güncelleyin");
@@ -165,10 +165,19 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
 
                 def= myRef.child("kamp").child(kamp.getId()).updateChildren(bilgiler);
 
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(edtAdi.getWindowToken(), 0);
+
             }
         });
 
-        ad.setNegativeButton("İptal", null);
+        ad.setNegativeButton("İptal", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(edtAdi.getWindowToken(), 0);
+            }
+        });
 
         ad.create().show();
 
@@ -183,6 +192,6 @@ public class KampAdapter extends RecyclerView.Adapter<KampAdapter.RowHolder> {
 
     public interface OnClickListener{
         void onClick(String id);
-        void  sil(String id);
+
     }
 }

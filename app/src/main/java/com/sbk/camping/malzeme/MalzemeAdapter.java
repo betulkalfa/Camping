@@ -8,6 +8,7 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -136,6 +137,9 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
         final EditText edtMalzemeAdi = tasarim.findViewById(R.id.edtMalzemeUrunAd);
         final Spinner spMalzemeTur = tasarim.findViewById(R.id.sp);
 
+        edtMalzemeAdi.requestFocus();
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 
         final AlertDialog.Builder ad = new AlertDialog.Builder(context);
         ad.setTitle("Kamp Malzemesi Güncelleyin");
@@ -169,30 +173,25 @@ public class MalzemeAdapter extends RecyclerView.Adapter<MalzemeAdapter.RowHolde
 
                 df= myRef.child("malzeme").child(malzeme.getId()).updateChildren(bilgiler);
 
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(edtMalzemeAdi.getWindowToken(), 0);
 
-
-               // myRef.child(malzeme.getId()).updateChildren(bilgiler);
 
 
             }
         });
 
-        ad.setNegativeButton("İptal", null);
+        ad.setNegativeButton("İptal", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(edtMalzemeAdi.getWindowToken(), 0);
+            }
+        });
 
         ad.create().show();
-
-    }
-    private OnClickListener onClickListener;
-
-    public void setOnClickListener(MalzemeAdapter.OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
-
     }
 
-    public interface OnClickListener{
-        void onSelect(Malzeme item);
-        void onUnSelect(Malzeme item);
-    }
 }
 
 

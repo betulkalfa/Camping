@@ -38,11 +38,8 @@ public class MalzemeListActivity extends AppCompatActivity {
 
     private FirebaseDatabase database;
     private DatabaseReference myRef, ref;
-    ;
     private MalzemeAdapter malzemeAdapter;
     private List malzemeList = new ArrayList<Malzeme>();
-    private Malzeme malzeme;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +66,8 @@ public class MalzemeListActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 malzemeEkleDialog(malzeme);
-
-
             }
         });
-
-
     }
 
     public void tumMalzeme() {
@@ -106,20 +99,17 @@ public class MalzemeListActivity extends AppCompatActivity {
 
     }
 
-
     void malzemeEkleDialog(final Malzeme malzeme) {
-
 
         LayoutInflater layout = LayoutInflater.from(this);
         final View tasarim = layout.inflate(R.layout.alert_malzeme_ekle, null);
         final EditText edtMalzemeAdi = tasarim.findViewById(R.id.edtMalzemeUrunAd);
-
+        final Spinner spMalzemeTur = tasarim.findViewById(R.id.sp);
+        edtMalzemeAdi.setInputType((InputType.TYPE_TEXT_VARIATION_PERSON_NAME));
 
         edtMalzemeAdi.requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(this.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-
-        final Spinner spMalzemeTur = tasarim.findViewById(R.id.sp);
 
         final AlertDialog.Builder ad = new AlertDialog.Builder(this);
 
@@ -129,28 +119,11 @@ public class MalzemeListActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-
-
                 String id = ref.push().getKey();
-
-              /* boolean a= malzemeList.equals(kelimeBul(edtMalzemeAdi.getText().toString(),malzemeList));
-
-                boolean b= (malzemeList.equals(arama(edtMalzemeAdi.getText().toString())));
-
-                String kelime = arama(edtMalzemeAdi.getText().toString());
-
-                boolean c=(kelime.equals(edtMalzemeAdi.getText().toString()));
-*/
-
-
-
-
-                String kelime1= arama(edtMalzemeAdi.getText().toString());
-                boolean p=malzemeList.equals(kelime1);
 
                 if (!edtMalzemeAdi.getText().toString().isEmpty()) {
 
-                    if (p==false) {
+                    if (!kelimeBul(edtMalzemeAdi.getText().toString(),malzemeList)) {
 
                         ref.child(id).setValue(new Malzeme(id, edtMalzemeAdi.getText().toString(), spMalzemeTur.getItemAtPosition(spMalzemeTur.getSelectedItemPosition()).toString()));
 
@@ -158,6 +131,7 @@ public class MalzemeListActivity extends AppCompatActivity {
                     } else {
 
                         Toast.makeText(getApplicationContext(), "Lütfen Farklı Malzeme Adı Giriniz.", Toast.LENGTH_LONG).show();
+
                     }
 
                 } else {
@@ -173,12 +147,14 @@ public class MalzemeListActivity extends AppCompatActivity {
         ad.setNegativeButton("İptal", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(edtMalzemeAdi.getWindowToken(), 0);
 
             }
         });
         ad.create().show();
+
     }
 
     @Override
@@ -196,9 +172,8 @@ public class MalzemeListActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 arama(newText);
-
-
                 return false;
             }
 
@@ -224,12 +199,11 @@ public class MalzemeListActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 malzemeList.clear();
-
                 for (DataSnapshot d : dataSnapshot.getChildren()) {
 
                     Malzeme malzeme = d.getValue(Malzeme.class);
 
-                    if (malzeme.getAdi().equals(aramKelime)) {
+                    if (malzeme.getAdi().toLowerCase().contains(aramKelime)) {
                         malzeme.setId(d.getKey());
                         malzemeList.add(malzeme);
 
@@ -247,21 +221,31 @@ public class MalzemeListActivity extends AppCompatActivity {
 
         return aramKelime;
     }
-    public List<Malzeme> kelimeBul (String kelime, List<Malzeme>malzemeList)  {
 
-        malzemeList.clear();
+    /*  public String kelimeBul(String kelime, List<Malzeme> malzemeList) {
+
+
+          for (Malzeme m : malzemeList) {
+                  m.getAdi();
+
+              if (malzeme.getAdi().equals(kelime)) {
+                  malzemeList.add(malzeme);
+              }
+          }
+          return kelime;
+
+      }
+  */
+    public boolean kelimeBul(String kelime, List<Malzeme> malzemeList) {
+
         for (Malzeme m : malzemeList) {
-             m.getAdi();
 
-            if (malzeme.getAdi().equals(kelime)) {
-                malzeme.setId(malzeme.getAdi());
-                malzemeList.add(malzeme);
+            if (m.getAdi().toLowerCase().equals(kelime.toLowerCase())) {
+                return true;
             }
+
         }
-        return malzemeList;
+        return false;
 
-            }
-
-
-
+    }
 }
